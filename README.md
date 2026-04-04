@@ -1,94 +1,211 @@
-Sistema de Gestión de Pedidos – Papitas Limoncitas
-Descripción del Proyecto
+# Sistema de Gestión de Pedidos – Papitas Limoncitas
 
-El presente proyecto tiene como finalidad el desarrollo de un sistema digital orientado a mejorar el proceso de atención al cliente y la gestión de pedidos de la empresa Papitas Limoncitas.
+## 1. Descripción del Proyecto
 
-Actualmente, el negocio recibe múltiples solicitudes de clientes a través de diferentes medios de comunicación, lo que en ocasiones genera retrasos en la atención y pérdida de oportunidades de venta. Ante esta situación, surge la necesidad de implementar una solución tecnológica que permita optimizar el proceso de ventas, mejorar la organización de los pedidos y brindar una atención más eficiente a los clientes.
+El presente proyecto consiste en el desarrollo de un sistema de información orientado a optimizar el proceso de gestión de pedidos y atención al cliente de la empresa *Papitas Limoncitas*, ubicada en la ciudad de Ibagué.
 
-Este sistema busca facilitar la interacción entre el cliente y el negocio mediante una interfaz sencilla que permita visualizar los productos disponibles y realizar pedidos de forma rápida y organizada.
+Actualmente, el negocio gestiona sus pedidos a través de múltiples canales de comunicación, lo que genera inconsistencias en la información, retrasos en la atención y dificultades en el control del inventario. En respuesta a esta problemática, se propone una solución tecnológica que permita centralizar la información, automatizar procesos y mejorar la eficiencia operativa.
 
-Objetivo General
+El sistema desarrollado permite a los usuarios consultar productos disponibles, seleccionar múltiples opciones de compra y registrar pedidos de manera estructurada, facilitando la administración y seguimiento de los mismos.
 
-Desarrollar un sistema digital que permita optimizar el proceso de atención al cliente y la gestión de pedidos para la empresa Papitas Limoncitas, contribuyendo a mejorar la eficiencia en el proceso de ventas.
+---
 
-Objetivos Específicos
+## 2. Objetivo General
 
-Analizar las necesidades actuales del negocio mediante el levantamiento de requerimientos.
+Desarrollar un sistema de información que permita optimizar la gestión de pedidos y mejorar el proceso de atención al cliente en la empresa Papitas Limoncitas.
 
-Diseñar la estructura del sistema que permita visualizar los productos y gestionar pedidos.
+---
 
-Implementar un sistema que facilite la interacción entre el cliente y el negocio.
+## 3. Objetivos Específicos
 
-Optimizar el proceso de atención al cliente mediante el uso de herramientas tecnológicas.
+* Analizar los requerimientos del negocio mediante técnicas de levantamiento de información.
+* Diseñar la arquitectura del sistema de acuerdo con las necesidades identificadas.
+* Implementar una solución tecnológica para la gestión de pedidos.
+* Mejorar la organización de la información y el control del inventario.
+* Facilitar la interacción entre el cliente y la empresa mediante una interfaz intuitiva.
 
-Información de la Empresa
+---
 
-Nombre de la empresa: Papitas Limoncitas
-Ubicación: Ibagué, Colombia
+## 4. Información de la Empresa
 
-Misión
+* **Nombre:** Papitas Limoncitas
+* **Ubicación:** Ibagué, Colombia
 
-Lograr que el producto sea reconocido en la ciudad de Ibagué y que los clientes puedan adquirirlo de una manera fácil y accesible.
+### Misión
 
-Visión
+Ofrecer un producto de calidad que sea reconocido en la ciudad, facilitando su adquisición mediante procesos accesibles y eficientes.
 
-Crecer empresarialmente mediante la implementación de sistemas tecnológicos que permitan optimizar los procesos del negocio y mejorar la atención al cliente.
+### Visión
 
-Funcionalidades del Sistema
+Consolidarse como una empresa competitiva mediante la implementación de soluciones tecnológicas que optimicen sus procesos y mejoren la experiencia del cliente.
 
-El sistema propuesto contempla las siguientes funcionalidades principales:
+---
 
-Visualización del menú de productos disponibles.
+## 5. Tecnologías Utilizadas
 
-Registro y gestión de pedidos de clientes.
+### Backend
 
-Organización de la información de clientes.
+* Java
+* Spring Boot
+* Spring Data JPA
 
-Mejora en la atención al cliente mediante herramientas digitales.
+### Frontend
 
-Optimización del proceso de ventas.
+* HTML
+* CSS
+* JavaScript
 
-Diseño del Sistema
+### Base de Datos
 
-El diseño del sistema se desarrolló en diferentes etapas con el fin de estructurar adecuadamente la interfaz del sistema.
+* MySQL
 
-Sketch
+### Herramientas de Desarrollo
 
-Boceto inicial del sistema realizado de manera manual con el propósito de definir la estructura básica de la interfaz.
+* Git
+* GitHub
+* Visual Studio Code
+* MySQL Workbench
 
-Wireframe
+---
 
-Representación estructural del sistema que permite organizar los elementos visuales de la interfaz.
+## 6. Funcionalidades del Sistema
 
-Mockup
+El sistema implementa las siguientes funcionalidades:
 
-Diseño visual del sistema que incluye elementos gráficos, tipografía y distribución final de la interfaz.
+* Registro y autenticación de usuarios.
+* Visualización de productos disponibles (sabores).
+* Selección de múltiples productos por pedido.
+* Cálculo automático del valor total de la compra.
+* Registro y almacenamiento de pedidos.
+* Control de inventario (stock) en tiempo real.
+* Gestión del estado de los pedidos.
+* Panel administrativo para seguimiento de pedidos.
 
-Metodología de Desarrollo
+---
 
-El proyecto se desarrolla bajo la metodología ágil Scrum, la cual permite organizar el trabajo en ciclos iterativos, facilitar la colaboración del equipo y realizar un seguimiento constante al progreso del proyecto.
+## 7. Arquitectura del Sistema
 
-Equipo de Trabajo
+El sistema se desarrolla bajo una arquitectura cliente-servidor:
 
-Product Owner: Diego Alejandro Oyola Padilla
+* **Frontend:** Interfaz web accesible desde navegador.
+* **Backend:** API REST desarrollada en Spring Boot.
+* **Base de datos:** MySQL para almacenamiento persistente.
 
-Scrum Master: Ángel David Arenales
+---
 
-Desarrollador: Juan Camilo Liberato
+## 8. Estructura del Proyecto
 
-Cronograma de Reuniones del Proyecto
-Fecha	Actividad
-23 de febrero de 2026	Inicio del proyecto
-25 de febrero de 2026	Levantamiento de requerimientos
-27 de febrero de 2026	Definición de requerimientos
-3 de marzo de 2026	Diseño del Sketch
-6 de marzo de 2026	Desarrollo del Wireframe
-9 de marzo de 2026	Diseño del Mockup
-12 de marzo de 2026	Revisión del avance del proyecto
-Estado del Proyecto
+```
+papitas/
+│── src/
+│   ├── main/java/com/papitas/papitas/
+│   │   ├── controller/
+│   │   ├── model/
+│   │   ├── repository/
+│   │   └── PapitasApplication.java
+│   ├── resources/
+│   │   ├── static/
+│   │   │   ├── index.html
+│   │   │   ├── login.html
+│   │   │   ├── registro.html
+│   │   │   ├── admin.html
+│   │   └── application.properties
+│── database.sql
+│── pom.xml
+```
 
-El proyecto se encuentra actualmente en fase de diseño y planificación del sistema.
+---
 
-Proyecto Académico
+## 9. Configuración de la Base de Datos
 
-Este proyecto se desarrolla como parte de un trabajo académico en el área de Ingeniería de Sistemas, aplicando metodologías ágiles para el análisis, diseño y desarrollo de soluciones tecnológicas orientadas a resolver problemas reales dentro de un entorno empresarial.
+Para la correcta ejecución del sistema, es necesario configurar la base de datos:
+
+1. Crear una base de datos en MySQL.
+2. Ejecutar el archivo:
+
+```
+database.sql
+```
+
+Este script crea las siguientes tablas:
+
+* producto
+* usuario
+* pedido
+* detalle_pedido
+
+---
+
+## 10. Ejecución del Proyecto
+
+### Clonar el repositorio
+
+```bash
+git clone https://github.com/diegooyola1029/ProyectoIngenieriaSoftware.git
+```
+
+### Configurar credenciales de base de datos
+
+Editar el archivo:
+
+```
+application.properties
+```
+
+### Ejecutar la aplicación
+
+```bash
+mvn spring-boot:run
+```
+
+### Acceder al sistema
+
+```
+http://localhost:8081
+```
+
+---
+
+## 11. Metodología de Desarrollo
+
+El proyecto fue desarrollado bajo la metodología ágil Scrum, permitiendo una gestión iterativa del desarrollo, facilitando la adaptación a cambios y el seguimiento continuo del progreso.
+
+---
+
+## 12. Equipo de Trabajo
+
+* **Product Owner:** Diego Alejandro Oyola Padilla
+* **Scrum Master:** Ángel David Arenales
+* **Desarrollador:** Juan Camilo Liberato
+
+---
+
+## 13. Estado del Proyecto
+
+El sistema se encuentra en una fase funcional, con implementación completa de:
+
+* Backend
+* Frontend
+* Base de datos
+* Gestión de pedidos
+
+---
+
+## 14. Mejoras Futuras
+
+* Integración de pasarelas de pago.
+* Implementación de notificaciones en tiempo real.
+* Desarrollo de aplicación móvil.
+* Despliegue en infraestructura en la nube.
+* Implementación de seguridad avanzada (JWT).
+
+---
+
+## 15. Naturaleza del Proyecto
+
+Este proyecto ha sido desarrollado como parte de un proceso académico en el área de Ingeniería de Sistemas, aplicando conocimientos en análisis, diseño e implementación de soluciones tecnológicas orientadas a resolver problemáticas reales en entornos empresariales.
+
+---
+
+
+
