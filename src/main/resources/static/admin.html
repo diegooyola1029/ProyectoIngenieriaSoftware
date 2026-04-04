@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Admin</title>
+
+<style>
+body { font-family: Arial; text-align:center; background:#f5f5f5; }
+.card {
+    background:white;
+    margin:20px auto;
+    padding:15px;
+    width:400px;
+    border-radius:10px;
+}
+button { padding:5px 10px; margin:5px; }
+</style>
+</head>
+
+<body>
+
+<h1>📊 Panel Admin</h1>
+
+<div id="pedidos"></div>
+
+<script>
+
+function cargarPedidos() {
+    fetch("http://localhost:8081/pedidos")
+    .then(res => res.json())
+    .then(data => {
+
+        const contenedor = document.getElementById("pedidos");
+        contenedor.innerHTML = "";
+
+        data.forEach(p => {
+
+            let detalles = "";
+
+            p.detalles.forEach(d => {
+                detalles += `${d.producto.nombre} x ${d.cantidad}<br>`;
+            });
+
+            contenedor.innerHTML += `
+                <div class="card">
+                    <b>${p.nombreCliente}</b><br>
+                    ${p.direccion}<br>
+                    ${p.telefono}<br><br>
+
+                    ${detalles}<br>
+
+                    Estado: ${p.estado}<br><br>
+
+                    <button onclick="cambiarEstado(${p.id}, 'En proceso')">En proceso</button>
+                    <button onclick="cambiarEstado(${p.id}, 'Enviado')">Enviado</button>
+                    <button onclick="cambiarEstado(${p.id}, 'Entregado')">Entregado</button>
+                </div>
+            `;
+        });
+
+    });
+}
+
+function cambiarEstado(id, estado) {
+    fetch(`http://localhost:8081/pedidos/${id}/estado`, {
+        method: "PUT",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ estado: estado })
+    })
+    .then(() => cargarPedidos());
+}
+
+cargarPedidos();
+
+</script>
+
+</body>
+</html>

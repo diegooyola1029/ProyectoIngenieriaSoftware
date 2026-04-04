@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Papitas Limoncitas</title>
+
+<style>
+body {
+    font-family: Arial;
+    text-align:center;
+    background: linear-gradient(to right, #a8e063, #56ab2f);
+    margin:0;
+}
+
+h1 {
+    margin-top:20px;
+}
+
+.card {
+    background:white;
+    padding:25px;
+    width:350px;
+    margin:30px auto;
+    border-radius:15px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.2);
+}
+
+input, select {
+    width:90%;
+    padding:8px;
+    margin:5px;
+    border-radius:8px;
+    border:1px solid #ccc;
+}
+
+button {
+    background:green;
+    color:white;
+    border:none;
+    padding:10px 20px;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+button:hover {
+    background:darkgreen;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🍟 Papitas Limoncitas</h1>
+
+<div class="card">
+
+<input id="direccion" placeholder="Dirección"><br>
+<input id="telefono" placeholder="+57..."><br><br>
+
+<!-- 🔥 PRODUCTOS -->
+<div id="productos"></div>
+
+<select id="metodoPago">
+<option>Efectivo</option>
+<option>Nequi</option>
+<option>Daviplata</option>
+</select><br><br>
+
+<p id="total">Total: $0</p>
+
+<button onclick="pedir()">Pedir</button>
+
+</div>
+
+<script>
+
+let productos = [];
+
+function cargarProductos() {
+    fetch("http://localhost:8081/productos")
+    .then(res => res.json())
+    .then(data => {
+
+        console.log("PRODUCTOS:", data); // 👈 mira esto en consola
+
+        productos = data;
+
+        const contenedor = document.getElementById("productos");
+        contenedor.innerHTML = "";
+
+        if (data.length === 0) {
+            contenedor.innerHTML = "<p>No hay productos 😢</p>";
+            return;
+        }
+
+        data.forEach(p => {
+            contenedor.innerHTML += `
+                <div style="margin-bottom:15px;">
+                    <h3>${p.nombre}</h3>
+                    Precio: $${p.precio} <br>
+                    Stock: ${p.stock} <br><br>
+                    <input type="number" min="0" id="prod_${p.id}" placeholder="¿Cuántos quieres?">
+                </div>
+                <hr>
+            `;
+        });
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Error cargando productos ❌");
+    });
+}
+
+cargarProductos();
+
+
+// 💰 TOTAL EN TIEMPO REAL
+document.addEventListener("input", () => {
+    let total = 0;
+
+    productos.forEach(p => {
+        const input = document.getElementById("prod_" + p.id);
+        if (input) {
+            const cantidad = parseInt(input.value || 0);
+            total += cantidad * p.precio;
+        }
+    });
+
+    document.getElementById("total").innerText = "Total: $" + total;
+});
+
+
+// 🛒 PEDIR
+function pedir() {
+
+    let detalles = [];
+
+    productos.forEach(p => {
+        const input = document.getElementById("prod_" + p.id);
+
+        if (input) {
+            const cantidad = parseInt(input.value || 0);
+
+            if (cantidad > 0) {
+                detalles.push({
+                    cantidad: cantidad,
+                    producto: { id: p.id }
+                });
+            }
+        }
+    });
+
+    if (detalles.length === 0) {
+        alert("Selecciona al menos un sabor ❌");
+        return;
+    }
+
+    const data = {
+        nombreCliente: "Cliente Web",
+        direccion: document.getElementById("direccion").value,
+        telefono: document.getElementById("telefono").value,
+        metodoPago: document.getElementById("metodoPago").value,
+        estado: "Pendiente",
+        detalles: detalles
+    };
+
+    console.log("ENVIANDO:", data);
+
+    fetch("http://localhost:8081/pedidos", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify(data)
+    })
+    .then(res => {
+        if (!res.ok) throw new Error();
+        return res.json();
+    })
+    .then(() => {
+        alert("Pedido exitoso 🎉");
+        cargarProductos();
+    })
+    .catch(() => alert("Error ❌"));
+}
+
+</script>
+
+</body>
+</html>

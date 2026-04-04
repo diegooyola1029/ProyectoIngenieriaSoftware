@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Login - Papitas Limoncitas</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ICONOS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #d4fc79, #96e6a1);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* CARD */
+.login-card {
+    background: white;
+    padding: 35px;
+    border-radius: 20px;
+    width: 320px;
+    text-align: center;
+    box-shadow: 0px 15px 40px rgba(0,0,0,0.2);
+    animation: fadeIn 1s ease;
+}
+
+@keyframes fadeIn {
+    from {opacity: 0; transform: translateY(20px);}
+    to {opacity: 1; transform: translateY(0);}
+}
+
+h2 {
+    color: green;
+    margin-bottom: 20px;
+}
+
+/* INPUT */
+.input-group {
+    position: relative;
+    margin: 10px 0;
+}
+
+.input-group i {
+    position: absolute;
+    left: 10px;
+    top: 12px;
+    color: gray;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px 35px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+}
+
+/* OJO PASSWORD */
+.eye {
+    position: absolute;
+    right: 10px;
+    top: 12px;
+    cursor: pointer;
+    color: gray;
+}
+
+/* BOTÓN */
+button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    background: linear-gradient(45deg, green, limegreen);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    transform: scale(1.05);
+    background: darkgreen;
+}
+
+.error {
+    color: red;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.link {
+    margin-top: 10px;
+    display: block;
+    color: green;
+    cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="login-card">
+
+<h2>🍟 Papitas Limoncitas</h2>
+
+<!-- EMAIL -->
+<div class="input-group">
+    <i class="fa fa-envelope"></i>
+    <input type="email" id="email" placeholder="Correo">
+</div>
+
+<!-- PASSWORD -->
+<div class="input-group">
+    <i class="fa fa-lock"></i>
+    <input type="password" id="password" placeholder="Contraseña">
+    <i class="fa fa-eye eye" onclick="togglePassword()"></i>
+</div>
+
+<button onclick="login()">Iniciar sesión</button>
+
+<div id="error" class="error"></div>
+
+<!-- LINK REGISTRO -->
+<a href="registro.html" class="link">¿No tienes cuenta? Regístrate</a>
+
+</div>
+
+<script>
+
+// 👁️ MOSTRAR / OCULTAR PASSWORD
+function togglePassword() {
+    const input = document.getElementById("password");
+    input.type = input.type === "password" ? "text" : "password";
+}
+
+// 🔐 LOGIN
+function login() {
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+
+    // VALIDACIÓN
+    if (!email || !password) {
+        mostrarError("Completa todos los campos ❌");
+        return;
+    }
+
+    fetch("http://localhost:8081/usuarios/login", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ email, password })
+    })
+    .then(res => {
+        if (!res.ok) throw new Error();
+        return res.json();
+    })
+    .then(data => {
+        localStorage.setItem("usuario", JSON.stringify(data));
+        window.location.href = "index.html";
+    })
+    .catch(() => {
+        mostrarError("Correo o contraseña incorrectos ❌");
+    });
+}
+
+// 🎯 MENSAJE DE ERROR ANIMADO
+function mostrarError(msg) {
+    const error = document.getElementById("error");
+    error.innerText = msg;
+    error.style.opacity = "0";
+    setTimeout(() => error.style.opacity = "1", 100);
+}
+
+</script>
+
+</body>
+</html>
