@@ -1,7 +1,12 @@
 package com.papitas.papitas.model;
 
-import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class DetallePedido {
@@ -11,6 +16,7 @@ public class DetallePedido {
     private Long id;
 
     private int cantidad;
+    private double subtotal;
 
     @ManyToOne
     @JoinColumn(name = "producto_id")
@@ -18,10 +24,8 @@ public class DetallePedido {
 
     @ManyToOne
     @JoinColumn(name = "pedido_id")
-    @JsonIgnore // 🔥 ESTA LÍNEA ARREGLA TODO
+    @JsonIgnore
     private Pedido pedido;
-
-    // GETTERS Y SETTERS
 
     public Long getId() {
         return id;
@@ -33,6 +37,14 @@ public class DetallePedido {
 
     public void setCantidad(int cantidad) {
         this.cantidad = cantidad;
+    }
+
+    public double getSubtotal() {
+        return subtotal;
+    }
+
+    public void setSubtotal(double subtotal) {
+        this.subtotal = subtotal;
     }
 
     public Producto getProducto() {

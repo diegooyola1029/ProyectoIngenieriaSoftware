@@ -1,78 +1,119 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Admin</title>
-
-<style>
-body { font-family: Arial; text-align:center; background:#f5f5f5; }
-.card {
-    background:white;
-    margin:20px auto;
-    padding:15px;
-    width:400px;
-    border-radius:10px;
-}
-button { padding:5px 10px; margin:5px; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Papitas Limoncitas | Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
+<body class="store-body admin-body">
+    <div class="store-backdrop"></div>
 
-<body>
+    <header class="navbar glass-panel">
+        <a class="brand-lockup" href="index.html">
+            <img src="assets/logo-ibague.jpeg" alt="Logo Papitas Limoncitas Ibague" class="brand-logo">
+            <div>
+                <strong>Papitas Limoncitas</strong>
+                <span>Panel administrativo</span>
+            </div>
+        </a>
 
-<h1>📊 Panel Admin</h1>
+        <nav class="navbar-links">
+            <a href="#dashboard">Dashboard</a>
+            <a href="#pedidos">Pedidos</a>
+            <a href="#inventario">Inventario</a>
+        </nav>
 
-<div id="pedidos"></div>
+        <div class="navbar-actions">
+            <div class="welcome-chip" id="adminWelcomeChip">Admin</div>
+            <button class="ghost-button" id="adminLogoutButton" type="button">Cerrar sesion</button>
+        </div>
+    </header>
 
-<script>
+    <main class="store-shell">
+        <section id="dashboard" class="hero-surface glass-panel admin-hero">
+            <div class="hero-copy">
+                <p class="eyebrow">Centro operativo</p>
+                <h1>Controla ventas, pedidos e inventario en tiempo real</h1>
+                <p class="hero-text">Panel profesional para seguimiento comercial y despacho sin recargar la pagina.</p>
+                <div id="liveIndicator" class="inline-banner success">Monitoreo automatico activo.</div>
+            </div>
+            <img src="assets/papitas-gallery-3.jpeg" alt="Branding Papitas Limoncitas" class="admin-hero-image">
+        </section>
 
-function cargarPedidos() {
-    fetch("http://localhost:8081/pedidos")
-    .then(res => res.json())
-    .then(data => {
+        <section class="metrics-grid enhanced-metrics">
+            <article class="metric-card glass-panel">
+                <span>Total ventas</span>
+                <strong id="metricSales">$0</strong>
+            </article>
+            <article class="metric-card glass-panel">
+                <span>Pedidos del dia</span>
+                <strong id="metricToday">0</strong>
+            </article>
+            <article class="metric-card glass-panel">
+                <span>Pendientes</span>
+                <strong id="metricPending">0</strong>
+            </article>
+            <article class="metric-card glass-panel">
+                <span>En proceso</span>
+                <strong id="metricProcess">0</strong>
+            </article>
+            <article class="metric-card glass-panel">
+                <span>Despachados</span>
+                <strong id="metricShipped">0</strong>
+            </article>
+            <article class="metric-card glass-panel">
+                <span>Entregados</span>
+                <strong id="metricDelivered">0</strong>
+            </article>
+        </section>
 
-        const contenedor = document.getElementById("pedidos");
-        contenedor.innerHTML = "";
-
-        data.forEach(p => {
-
-            let detalles = "";
-
-            p.detalles.forEach(d => {
-                detalles += `${d.producto.nombre} x ${d.cantidad}<br>`;
-            });
-
-            contenedor.innerHTML += `
-                <div class="card">
-                    <b>${p.nombreCliente}</b><br>
-                    ${p.direccion}<br>
-                    ${p.telefono}<br><br>
-
-                    ${detalles}<br>
-
-                    Estado: ${p.estado}<br><br>
-
-                    <button onclick="cambiarEstado(${p.id}, 'En proceso')">En proceso</button>
-                    <button onclick="cambiarEstado(${p.id}, 'Enviado')">Enviado</button>
-                    <button onclick="cambiarEstado(${p.id}, 'Entregado')">Entregado</button>
+        <section class="content-grid admin-content-grid">
+            <section id="pedidos" class="catalog-stack">
+                <div class="section-panel glass-panel">
+                    <div class="section-head">
+                        <div>
+                            <p class="eyebrow">Pedidos</p>
+                            <h2>Gestion comercial</h2>
+                        </div>
+                        <div class="admin-filters">
+                            <input id="adminSearchInput" type="search" placeholder="Buscar cliente o correo">
+                            <select id="statusFilter">
+                                <option value="TODOS">Todos los estados</option>
+                                <option value="PENDIENTE">Pendiente</option>
+                                <option value="EN_PROCESO">En proceso</option>
+                                <option value="DESPACHADO">Despachado</option>
+                                <option value="ENTREGADO">Entregado</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="ordersList" class="admin-orders"></div>
                 </div>
-            `;
-        });
+            </section>
 
-    });
-}
+            <aside id="inventario" class="cart-sidebar glass-panel">
+                <div class="section-head compact">
+                    <div>
+                        <p class="eyebrow">Inventario</p>
+                        <h2>Alertas de stock</h2>
+                    </div>
+                </div>
+                <div id="lowStockList" class="stock-list"></div>
+                <div class="section-divider"></div>
+                <div>
+                    <p class="eyebrow">Siguiente accion</p>
+                    <p id="adminInsight" class="muted"></p>
+                </div>
+            </aside>
+        </section>
+    </main>
 
-function cambiarEstado(id, estado) {
-    fetch(`http://localhost:8081/pedidos/${id}/estado`, {
-        method: "PUT",
-        headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({ estado: estado })
-    })
-    .then(() => cargarPedidos());
-}
+    <div id="toast" class="toast hidden"></div>
 
-cargarPedidos();
-
-</script>
-
+    <script src="shared.js"></script>
+    <script src="admin.js"></script>
 </body>
 </html>

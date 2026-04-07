@@ -1,188 +1,262 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Papitas Limoncitas</title>
-
-<style>
-body {
-    font-family: Arial;
-    text-align:center;
-    background: linear-gradient(to right, #a8e063, #56ab2f);
-    margin:0;
-}
-
-h1 {
-    margin-top:20px;
-}
-
-.card {
-    background:white;
-    padding:25px;
-    width:350px;
-    margin:30px auto;
-    border-radius:15px;
-    box-shadow:0 10px 25px rgba(0,0,0,0.2);
-}
-
-input, select {
-    width:90%;
-    padding:8px;
-    margin:5px;
-    border-radius:8px;
-    border:1px solid #ccc;
-}
-
-button {
-    background:green;
-    color:white;
-    border:none;
-    padding:10px 20px;
-    border-radius:10px;
-    cursor:pointer;
-}
-
-button:hover {
-    background:darkgreen;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Papitas Limoncitas | Tienda</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Satisfy&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
+<body class="store-body">
+    <div class="store-backdrop"></div>
 
-<body>
+    <header class="navbar glass-panel">
+        <a class="brand-lockup" href="#inicio">
+            <img src="assets/logo-ibague.jpeg" alt="Logo Papitas Limoncitas Ibague" class="brand-logo">
+            <div>
+                <strong>Papitas Limoncitas</strong>
+                <span>Las autenticas</span>
+            </div>
+        </a>
 
-<h1>🍟 Papitas Limoncitas</h1>
+        <nav class="navbar-links">
+            <a href="#catalogo">Productos</a>
+            <a href="#mayorista">Mayorista</a>
+            <a href="#historial">Historial</a>
+            <a href="admin.html" id="adminLink" class="hidden">Admin</a>
+        </nav>
 
-<div class="card">
+        <div class="navbar-actions">
+            <div class="welcome-chip" id="welcomeChip">Invitado</div>
+            <button class="ghost-button" id="logoutButton" type="button">Cerrar sesion</button>
+        </div>
+    </header>
 
-<input id="direccion" placeholder="Dirección"><br>
-<input id="telefono" placeholder="+57..."><br><br>
-
-<!-- 🔥 PRODUCTOS -->
-<div id="productos"></div>
-
-<select id="metodoPago">
-<option>Efectivo</option>
-<option>Nequi</option>
-<option>Daviplata</option>
-</select><br><br>
-
-<p id="total">Total: $0</p>
-
-<button onclick="pedir()">Pedir</button>
-
-</div>
-
-<script>
-
-let productos = [];
-
-function cargarProductos() {
-    fetch("http://localhost:8081/productos")
-    .then(res => res.json())
-    .then(data => {
-
-        console.log("PRODUCTOS:", data); // 👈 mira esto en consola
-
-        productos = data;
-
-        const contenedor = document.getElementById("productos");
-        contenedor.innerHTML = "";
-
-        if (data.length === 0) {
-            contenedor.innerHTML = "<p>No hay productos 😢</p>";
-            return;
-        }
-
-        data.forEach(p => {
-            contenedor.innerHTML += `
-                <div style="margin-bottom:15px;">
-                    <h3>${p.nombre}</h3>
-                    Precio: $${p.precio} <br>
-                    Stock: ${p.stock} <br><br>
-                    <input type="number" min="0" id="prod_${p.id}" placeholder="¿Cuántos quieres?">
+    <main class="store-shell">
+        <section id="inicio" class="hero-surface glass-panel">
+            <div class="hero-copy">
+                <p class="eyebrow">Las mejores papitas de la ciudad</p>
+                <h1>Sabor que enamora en cada bocado</h1>
+                <p class="hero-text">Perfectas para compartir o emprender. Calidad + sabor = Papitas Limoncitas.</p>
+                <div class="hero-badges">
+                    <span class="meta-chip">Entrega agil</span>
+                    <span class="meta-chip">Snack premium</span>
+                    <span class="meta-chip">Ideal para reventa</span>
                 </div>
-                <hr>
-            `;
-        });
-    })
-    .catch(err => {
-        console.error(err);
-        alert("Error cargando productos ❌");
-    });
-}
+                <div class="hero-cta">
+                    <a class="primary-inline-button" href="#catalogo">Pedir ahora</a>
+                    <a class="ghost-button" href="#mayorista">Ver mayorista</a>
+                </div>
+            </div>
 
-cargarProductos();
+            <div class="hero-visual">
+                <div class="hero-photo-card">
+                    <img src="assets/papitas-gallery-1.jpeg" alt="Empaques reales de Papitas Limoncitas">
+                    <div class="floating-quote">Perfectas para compartir o emprender</div>
+                </div>
+                <div class="hero-stats">
+                    <article>
+                        <strong id="productCount">0</strong>
+                        <span>Sabores disponibles</span>
+                    </article>
+                    <article>
+                        <strong id="lowStockCount">0</strong>
+                        <span>Con stock bajo</span>
+                    </article>
+                </div>
+            </div>
+        </section>
 
+        <section class="marketing-strip">
+            <article class="marketing-card glass-panel">"Las mejores papitas de la ciudad!"</article>
+            <article class="marketing-card glass-panel">"Sabor que enamora en cada bocado"</article>
+            <article class="marketing-card glass-panel">"Calidad + sabor = Papitas Limoncitas"</article>
+        </section>
 
-// 💰 TOTAL EN TIEMPO REAL
-document.addEventListener("input", () => {
-    let total = 0;
+        <section id="catalogo" class="content-grid">
+            <section class="catalog-stack">
+                <div class="section-panel glass-panel">
+                    <div class="section-head">
+                        <div>
+                            <p class="eyebrow">Catalogo</p>
+                            <h2>Elige tus papitas favoritas</h2>
+                            <p class="muted">Productos con imagen real, stock visible y compra super rapida.</p>
+                        </div>
+                        <label class="searchbox">
+                            <span>Buscar sabor</span>
+                            <input id="searchInput" type="search" placeholder="Limon, BBQ, tocineta...">
+                        </label>
+                    </div>
+                    <div id="productGrid" class="product-grid"></div>
+                    <div id="emptyProducts" class="empty-state hidden">No encontramos productos con ese filtro.</div>
+                </div>
 
-    productos.forEach(p => {
-        const input = document.getElementById("prod_" + p.id);
-        if (input) {
-            const cantidad = parseInt(input.value || 0);
-            total += cantidad * p.precio;
-        }
-    });
+                <div id="mayorista" class="section-panel glass-panel wholesale-panel">
+                    <div class="section-head">
+                        <div>
+                            <p class="eyebrow">Compra al por mayor</p>
+                            <h2>Ideal para negocios y emprendedores</h2>
+                            <p class="muted">Si compras 50 o mas unidades, activamos precio mayorista automaticamente.</p>
+                        </div>
+                        <img src="assets/papitas-gallery-2.jpeg" alt="Marca Papitas Limoncitas" class="wholesale-brand">
+                    </div>
+                    <div class="wholesale-grid">
+                        <article class="wholesale-card">
+                            <strong>Precio mayorista</strong>
+                            <span>$2200 por unidad</span>
+                        </article>
+                        <article class="wholesale-card">
+                            <strong>Precio sugerido de venta</strong>
+                            <span>$3000 por unidad</span>
+                        </article>
+                        <article class="wholesale-card accent">
+                            <strong>Mensaje</strong>
+                            <span>Gana dinero revendiendo nuestras papitas.</span>
+                        </article>
+                    </div>
+                    <div id="wholesaleStatus" class="inline-banner">
+                        Todavia no alcanzas el minimo mayorista.
+                    </div>
+                </div>
 
-    document.getElementById("total").innerText = "Total: $" + total;
-});
+                <div id="historial" class="section-panel glass-panel">
+                    <div class="section-head">
+                        <div>
+                            <p class="eyebrow">Historial</p>
+                            <h2>Tus ultimos pedidos</h2>
+                        </div>
+                        <button id="refreshHistoryButton" class="ghost-button" type="button">Actualizar</button>
+                    </div>
+                    <div id="historyList" class="history-list"></div>
+                </div>
 
+                <div class="section-panel glass-panel">
+                    <div class="section-head">
+                        <div>
+                            <p class="eyebrow">Contacto oficial</p>
+                            <h2>Haz tu pedido tambien por redes</h2>
+                            <p class="muted">Si prefieres atencion directa, escribe o comparte nuestro perfil.</p>
+                        </div>
+                    </div>
+                    <div class="wholesale-grid">
+                        <article class="wholesale-card">
+                            <strong>Telefono</strong>
+                            <span>3105999230</span>
+                        </article>
+                        <article class="wholesale-card accent">
+                            <strong>Instagram</strong>
+                            <span><a href="https://www.instagram.com/papitaslimoncitasibague/" target="_blank" rel="noopener noreferrer">@papitaslimoncitasibague</a></span>
+                        </article>
+                        <article class="wholesale-card">
+                            <strong>Mensaje</strong>
+                            <span>Escribenos para pedidos, eventos y ventas al por mayor.</span>
+                        </article>
+                    </div>
+                </div>
+            </section>
 
-// 🛒 PEDIR
-function pedir() {
+            <aside id="cartPanel" class="cart-sidebar glass-panel">
+                <div class="section-head compact">
+                    <div>
+                        <p class="eyebrow">Carrito</p>
+                        <h2>Tu pedido</h2>
+                    </div>
+                    <span class="badge" id="cartCount">0 items</span>
+                </div>
 
-    let detalles = [];
+                <div id="cartItems" class="cart-items"></div>
+                <div id="emptyCart" class="empty-state">Agrega productos para empezar tu pedido.</div>
 
-    productos.forEach(p => {
-        const input = document.getElementById("prod_" + p.id);
+                <div class="summary-box">
+                    <div class="summary-row">
+                        <span>Unidades</span>
+                        <strong id="unitsValue">0</strong>
+                    </div>
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <strong id="subtotalValue">$0</strong>
+                    </div>
+                    <div class="summary-row">
+                        <span>Ahorro mayorista</span>
+                        <strong id="savingValue">$0</strong>
+                    </div>
+                    <div class="summary-row total-row">
+                        <span>Total</span>
+                        <strong id="totalValue">$0</strong>
+                    </div>
+                </div>
 
-        if (input) {
-            const cantidad = parseInt(input.value || 0);
+                <form id="checkoutForm" class="checkout-form" novalidate>
+                    <div class="input-wrap">
+                        <label for="direccion">Direccion de entrega</label>
+                        <input id="direccion" name="direccion" placeholder="Calle 123 #45-67, apto 201" maxlength="160">
+                        <small class="field-error" data-error-for="direccion"></small>
+                    </div>
+                    <div class="input-wrap">
+                        <label for="telefono">Telefono de contacto</label>
+                        <input id="telefono" name="telefono" placeholder="+57 300 123 4567" maxlength="20">
+                        <small class="field-error" data-error-for="telefono"></small>
+                    </div>
+                    <div class="input-wrap">
+                        <label for="metodoPago">Metodo de pago</label>
+                        <select id="metodoPago" name="metodoPago">
+                            <option value="">Selecciona una opcion</option>
+                            <option value="Efectivo">Efectivo</option>
+                            <option value="Nequi">Nequi</option>
+                            <option value="Daviplata">Daviplata</option>
+                        </select>
+                        <small class="field-error" data-error-for="metodoPago"></small>
+                    </div>
 
-            if (cantidad > 0) {
-                detalles.push({
-                    cantidad: cantidad,
-                    producto: { id: p.id }
-                });
-            }
-        }
-    });
+                    <div id="orderPreview" class="summary-preview">Tu resumen aparecera aqui cuando agregues productos.</div>
+                    <button id="submitOrderButton" class="primary-button" type="submit">Confirmar pedido</button>
+                </form>
+            </aside>
+        </section>
+    </main>
 
-    if (detalles.length === 0) {
-        alert("Selecciona al menos un sabor ❌");
-        return;
-    }
+    <button id="floatingCartButton" class="floating-cart" type="button">
+        <span>Carrito</span>
+        <strong id="floatingCartCount">0</strong>
+    </button>
 
-    const data = {
-        nombreCliente: "Cliente Web",
-        direccion: document.getElementById("direccion").value,
-        telefono: document.getElementById("telefono").value,
-        metodoPago: document.getElementById("metodoPago").value,
-        estado: "Pendiente",
-        detalles: detalles
-    };
+    <div id="confirmModal" class="modal hidden">
+        <div class="modal-card">
+            <p class="eyebrow">Confirmacion</p>
+            <h3>Revisa tu pedido antes de enviarlo</h3>
+            <div id="confirmContent" class="confirm-content"></div>
+            <div class="modal-actions">
+                <button id="cancelConfirmButton" class="ghost-button" type="button">Seguir editando</button>
+                <button id="confirmOrderButton" class="primary-button" type="button">Enviar ahora</button>
+            </div>
+        </div>
+    </div>
 
-    console.log("ENVIANDO:", data);
+    <div id="processingModal" class="modal hidden">
+        <div class="modal-card process-card">
+            <div class="spinner-ring"></div>
+            <p class="eyebrow">Pedido en proceso</p>
+            <h3>Estamos preparando tu orden</h3>
+            <p class="muted">Validando productos, stock y total final.</p>
+        </div>
+    </div>
 
-    fetch("http://localhost:8081/pedidos", {
-        method: "POST",
-        headers: {"Content-Type":"application/json"},
-        body: JSON.stringify(data)
-    })
-    .then(res => {
-        if (!res.ok) throw new Error();
-        return res.json();
-    })
-    .then(() => {
-        alert("Pedido exitoso 🎉");
-        cargarProductos();
-    })
-    .catch(() => alert("Error ❌"));
-}
+    <div id="successModal" class="modal hidden">
+        <div class="modal-card success-card">
+            <p class="eyebrow">Pedido exitoso</p>
+            <h3>Tu compra fue registrada correctamente</h3>
+            <p id="successMessage" class="muted"></p>
+            <div class="modal-actions">
+                <button id="closeSuccessButton" class="primary-button" type="button">Seguir comprando</button>
+            </div>
+        </div>
+    </div>
 
-</script>
+    <div id="toast" class="toast hidden"></div>
 
+    <script src="shared.js"></script>
+    <script src="index.js"></script>
 </body>
 </html>
