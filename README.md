@@ -1,211 +1,231 @@
-# Sistema de Gestión de Pedidos – Papitas Limoncitas
+# Papitas Limoncitas
 
-## 1. Descripción del Proyecto
+Sistema web de pedidos para **Papitas Limoncitas**, construido con **Spring Boot + MySQL + HTML/CSS/JavaScript**, enfocado en una experiencia moderna tipo app, flujo de compra claro y panel administrativo para seguimiento operativo.
 
-El presente proyecto consiste en el desarrollo de un sistema de información orientado a optimizar el proceso de gestión de pedidos y atención al cliente de la empresa *Papitas Limoncitas*, ubicada en la ciudad de Ibagué.
+## Demo del proyecto
 
-Actualmente, el negocio gestiona sus pedidos a través de múltiples canales de comunicación, lo que genera inconsistencias en la información, retrasos en la atención y dificultades en el control del inventario. En respuesta a esta problemática, se propone una solución tecnológica que permita centralizar la información, automatizar procesos y mejorar la eficiencia operativa.
+El sistema incluye:
 
-El sistema desarrollado permite a los usuarios consultar productos disponibles, seleccionar múltiples opciones de compra y registrar pedidos de manera estructurada, facilitando la administración y seguimiento de los mismos.
+- Tienda visual tipo app con branding de la marca
+- Login y registro de usuarios
+- Carrito dinámico con persistencia en `localStorage`
+- Resumen y confirmación de pedido
+- Historial de pedidos por usuario
+- Compra al por mayor con precio automático
+- Panel admin con dashboard, estados e inventario
+- Notificación automática de nuevos pedidos por polling
 
----
+## Funcionalidades principales
 
-## 2. Objetivo General
+### Cliente
 
-Desarrollar un sistema de información que permita optimizar la gestión de pedidos y mejorar el proceso de atención al cliente en la empresa Papitas Limoncitas.
+- Registro e inicio de sesión
+- Visualización de productos con imagen, precio y stock
+- Búsqueda de sabores
+- Carrito dinámico
+- Cálculo de total en tiempo real
+- Confirmación antes de enviar pedido
+- Pantalla de éxito
+- Historial de pedidos
+- Sección de compra mayorista
 
----
+### Administrador
 
-## 3. Objetivos Específicos
+- Dashboard con métricas principales
+- Lista de pedidos
+- Cambio de estado de pedidos:
+  - `PENDIENTE`
+  - `EN_PROCESO`
+  - `DESPACHADO`
+  - `ENTREGADO`
+- Alertas de stock bajo
+- Monitoreo automático de nuevos pedidos
 
-* Analizar los requerimientos del negocio mediante técnicas de levantamiento de información.
-* Diseñar la arquitectura del sistema de acuerdo con las necesidades identificadas.
-* Implementar una solución tecnológica para la gestión de pedidos.
-* Mejorar la organización de la información y el control del inventario.
-* Facilitar la interacción entre el cliente y la empresa mediante una interfaz intuitiva.
+## Compra al por mayor
 
----
+El sistema activa automáticamente modo mayorista cuando el pedido alcanza **50 unidades o más**.
 
-## 4. Información de la Empresa
+- Precio mayorista: **$2200** por unidad
+- Precio sugerido de venta: **$3000** por unidad
+- El total se recalcula automáticamente en frontend y backend
 
-* **Nombre:** Papitas Limoncitas
-* **Ubicación:** Ibagué, Colombia
+## Stack tecnológico
 
-### Misión
+- **Backend:** Java, Spring Boot, Spring MVC, Spring Data JPA
+- **Base de datos:** MySQL
+- **Frontend:** HTML, CSS, JavaScript Vanilla
+- **Seguridad básica:** BCrypt para contraseñas
+- **Build tool:** Maven Wrapper
 
-Ofrecer un producto de calidad que sea reconocido en la ciudad, facilitando su adquisición mediante procesos accesibles y eficientes.
+## Estructura del proyecto
 
-### Visión
-
-Consolidarse como una empresa competitiva mediante la implementación de soluciones tecnológicas que optimicen sus procesos y mejoren la experiencia del cliente.
-
----
-
-## 5. Tecnologías Utilizadas
-
-### Backend
-
-* Java
-* Spring Boot
-* Spring Data JPA
-
-### Frontend
-
-* HTML
-* CSS
-* JavaScript
-
-### Base de Datos
-
-* MySQL
-
-### Herramientas de Desarrollo
-
-* Git
-* GitHub
-* Visual Studio Code
-* MySQL Workbench
-
----
-
-## 6. Funcionalidades del Sistema
-
-El sistema implementa las siguientes funcionalidades:
-
-* Registro y autenticación de usuarios.
-* Visualización de productos disponibles (sabores).
-* Selección de múltiples productos por pedido.
-* Cálculo automático del valor total de la compra.
-* Registro y almacenamiento de pedidos.
-* Control de inventario (stock) en tiempo real.
-* Gestión del estado de los pedidos.
-* Panel administrativo para seguimiento de pedidos.
-
----
-
-## 7. Arquitectura del Sistema
-
-El sistema se desarrolla bajo una arquitectura cliente-servidor:
-
-* **Frontend:** Interfaz web accesible desde navegador.
-* **Backend:** API REST desarrollada en Spring Boot.
-* **Base de datos:** MySQL para almacenamiento persistente.
-
----
-
-## 8. Estructura del Proyecto
-
-```
-papitas/
-│── src/
-│   ├── main/java/com/papitas/papitas/
-│   │   ├── controller/
-│   │   ├── model/
-│   │   ├── repository/
-│   │   └── PapitasApplication.java
-│   ├── resources/
-│   │   ├── static/
-│   │   │   ├── index.html
-│   │   │   ├── login.html
-│   │   │   ├── registro.html
-│   │   │   ├── admin.html
-│   │   └── application.properties
-│── database.sql
-│── pom.xml
-```
-
----
-
-## 9. Configuración de la Base de Datos
-
-Para la correcta ejecución del sistema, es necesario configurar la base de datos:
-
-1. Crear una base de datos en MySQL.
-2. Ejecutar el archivo:
-
-```
+```text
+src/
+  main/
+    java/com/papitas/papitas/
+      controller/
+      dto/
+      exception/
+      model/
+      repository/
+      service/
+    resources/
+      static/
+        assets/
+        admin.html
+        admin.js
+        index.html
+        index.js
+        login.html
+        login.js
+        registro.html
+        registro.js
+        shared.js
+        styles.css
+      application.properties
 database.sql
+pom.xml
+README.md
 ```
 
-Este script crea las siguientes tablas:
+## Requisitos
 
-* producto
-* usuario
-* pedido
-* detalle_pedido
+- Java 17+ o compatible con tu entorno Maven/Spring Boot
+- Maven (o usar `mvnw` / `mvnw.cmd`)
+- MySQL
 
----
+## Configuración local
 
-## 10. Ejecución del Proyecto
+### 1. Crear la base de datos
 
-### Clonar el repositorio
+Puedes usar el script:
+
+```sql
+SOURCE database.sql;
+```
+
+O ejecutar manualmente el contenido de [database.sql](/c:/Users/diego/Downloads/papitas/database.sql).
+
+### 2. Configurar credenciales
+
+Edita [application.properties](/c:/Users/diego/Downloads/papitas/src/main/resources/application.properties) con tus datos locales de MySQL:
+
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/papitas
+spring.datasource.username=TU_USUARIO
+spring.datasource.password=TU_PASSWORD
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.open-in-view=false
+
+server.port=8081
+```
+
+## Ejecución local
+
+### En Windows
 
 ```bash
-git clone https://github.com/diegooyola1029/ProyectoIngenieriaSoftware.git
+./mvnw.cmd spring-boot:run
 ```
 
-### Configurar credenciales de base de datos
-
-Editar el archivo:
-
-```
-application.properties
-```
-
-### Ejecutar la aplicación
+### En macOS/Linux
 
 ```bash
-mvn spring-boot:run
+./mvnw spring-boot:run
 ```
 
-### Acceder al sistema
+Luego abre:
 
+- Tienda: `http://localhost:8081/index.html`
+- Login: `http://localhost:8081/login.html`
+- Admin: `http://localhost:8081/admin.html`
+
+## Usuario administrador
+
+Si tu base no tiene un administrador, puedes crear uno con:
+
+```sql
+USE papitas;
+
+INSERT INTO usuario (nombre, email, telefono, password, rol)
+VALUES ('Administrador', 'admin@papitas.com', '3105999230', 'admin123', 'ADMIN');
 ```
-http://localhost:8081
+
+Nota:
+
+- El sistema acepta cuentas heredadas con contraseña en texto plano y las migra a BCrypt al iniciar sesión.
+
+## Pruebas
+
+Ejecuta:
+
+```bash
+./mvnw.cmd test
 ```
 
----
+## Endpoints principales
 
-## 11. Metodología de Desarrollo
+### Usuarios
 
-El proyecto fue desarrollado bajo la metodología ágil Scrum, permitiendo una gestión iterativa del desarrollo, facilitando la adaptación a cambios y el seguimiento continuo del progreso.
+- `POST /usuarios/registro`
+- `POST /usuarios/login`
+- `GET /usuarios`
 
----
+### Productos
 
-## 12. Equipo de Trabajo
+- `GET /productos`
+- `POST /productos`
 
-* **Product Owner:** Diego Alejandro Oyola Padilla
-* **Scrum Master:** Ángel David Arenales
-* **Desarrollador:** Juan Camilo Liberato
+### Pedidos
 
----
+- `GET /pedidos`
+- `GET /pedidos/usuario/{email}`
+- `POST /pedidos`
+- `PUT /pedidos/{id}/estado`
 
-## 13. Estado del Proyecto
+## Características técnicas destacadas
 
-El sistema se encuentra en una fase funcional, con implementación completa de:
+- DTOs para entrada y salida de datos
+- Manejo global de errores con `@RestControllerAdvice`
+- Capa de servicios separada
+- Validaciones backend con Bean Validation
+- Persistencia JPA
+- Cálculo mayorista duplicado en backend para evitar inconsistencias
+- Carrito persistente con `localStorage`
 
-* Backend
-* Frontend
-* Base de datos
-* Gestión de pedidos
+## Branding y activos visuales
 
----
+Los recursos visuales de la marca están en:
 
-## 14. Mejoras Futuras
+- [assets](/c:/Users/diego/Downloads/papitas/src/main/resources/static/assets)
 
-* Integración de pasarelas de pago.
-* Implementación de notificaciones en tiempo real.
-* Desarrollo de aplicación móvil.
-* Despliegue en infraestructura en la nube.
-* Implementación de seguridad avanzada (JWT).
+Incluyen:
 
----
+- logo oficial
+- fotos reales del producto
+- branding visual usado en la tienda y el panel admin
 
-## 15. Naturaleza del Proyecto
+## Despliegue
 
-Este proyecto ha sido desarrollado como parte de un proceso académico en el área de Ingeniería de Sistemas, aplicando conocimientos en análisis, diseño e implementación de soluciones tecnológicas orientadas a resolver problemáticas reales en entornos empresariales.
+La forma más simple de desplegar este proyecto es:
 
----
+- **Backend + frontend juntos:** Render
+- **Base de datos:** Railway / MySQL externo
 
+Para producción, se recomienda:
 
+- mover credenciales a variables de entorno
+- configurar `spring.datasource.*` con valores externos
+- usar una URL pública para el backend si separas frontend y backend
 
+## Repositorio
+
+Repositorio remoto actual:
+
+- `https://github.com/diegooyola1029/ProyectoIngenieriaSoftware.git`
+
+## Autor
+
+Proyecto desarrollado para **Papitas Limoncitas** como sistema de pedidos con enfoque profesional, visual y comercial.
