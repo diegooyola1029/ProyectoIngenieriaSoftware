@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SOLID · Patrones · Arquitectura — Papitas Limoncitas</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Lora:ital,wght@0,400;0,600;1,400&display=swap');
+
+:root {
+  --y: #F5C800;
+  --o: #FF6B00;
+  --g: #C8E000;
+  --d: #1A1200;
+  --w: #FFFBEA;
+  --m: #2C2400;
+  --card: #FFFFF5;
+  --border: rgba(245,200,0,0.3);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Lora', serif;
+  background: var(--d);
+  color: var(--w);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* BG texture */
+body::before {
+  content:'';
+  position:fixed;
+  inset:0;
+  background: 
+    radial-gradient(ellipse at 20% 50%, rgba(245,200,0,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(255,107,0,0.05) 0%, transparent 50%);
+  pointer-events:none;
+  z-index:0;
+}
+
+/* SIDEBAR */
+.sidebar {
+  position: fixed;
+  left:0; top:0; bottom:0;
+  width: 240px;
+  background: #110E00;
+  border-right: 1px solid var(--border);
+  z-index: 100;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-logo {
+  padding: 28px 20px 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.logo-chip {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.5rem;
+  color: var(--y);
+  letter-spacing: 2px;
+  line-height: 1;
+}
+
+.logo-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  color: #666;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.nav-group { padding: 20px 0 0; }
+
+.nav-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  color: #444;
+  padding: 0 20px 10px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-left: 2px solid transparent;
+  transition: all 0.2s;
+  text-decoration: none;
+  color: #888;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.75rem;
+}
+
+.nav-item:hover, .nav-item.active {
+  color: var(--y);
+  border-left-color: var(--y);
+  background: rgba(245,200,0,0.05);
+}
+
+.nav-item .dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.5;
+  flex-shrink: 0;
+}
+
+.nav-item.active .dot { opacity: 1; }
+
+/* MAIN */
+.main {
+  margin-left: 240px;
+  position: relative;
+  z-index: 1;
+}
+
+/* HERO */
+.hero {
+  padding: 60px 60px 50px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::after {
+  content: '🍟';
+  position: absolute;
+  right: 60px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 6rem;
+  opacity: 0.08;
+}
+
+.hero-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: var(--o);
+  margin-bottom: 12px;
+}
+
+.hero-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  color: var(--y);
+  letter-spacing: 3px;
+  line-height: 1;
+  margin-bottom: 16px;
+}
+
+.hero-desc {
+  font-size: 0.95rem;
+  color: #aaa;
+  max-width: 600px;
+  line-height: 1.7;
+  font-style: italic;
+}
+
+.hero-tags {
+  display: flex;
+  gap: 8px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  padding: 4px 12px;
+  border-radius: 2px;
+  border: 1px solid;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.tag-y { border-color: var(--y); color: var(--y); }
+.tag-o { border-color: var(--o); color: var(--o); }
+.tag-g { border-color: var(--g); color: var(--g); }
+
+/* SECTIONS */
+.section { display: none; padding: 50px 60px 80px; }
+.section.active { display: block; }
+
+.section-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: var(--o);
+  margin-bottom: 8px;
+}
+
+.section-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.8rem;
+  color: var(--y);
+  letter-spacing: 3px;
+  margin-bottom: 8px;
+}
+
+.section-intro {
+  font-size: 0.92rem;
+  color: #aaa;
+  font-style: italic;
+  max-width: 700px;
+  line-height: 1.7;
+  margin-bottom: 40px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* CARDS */
+.card {
+  background: #1E1800;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 28px 32px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.card:hover { border-color: rgba(245,200,0,0.5); }
+
+.card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--y);
+}
+
+.card.orange::before { background: var(--o); }
+.card.green::before { background: var(--g); }
+.card.red::before { background: #FF4444; }
+.card.blue::before { background: #4488FF; }
+.card.purple::before { background: #AA44FF; }
+
+.card-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--y);
+  margin-bottom: 8px;
+}
+
+.card.orange .card-label { color: var(--o); }
+.card.green .card-label { color: var(--g); }
+.card.red .card-label { color: #FF4444; }
+.card.blue .card-label { color: #4488FF; }
+.card.purple .card-label { color: #AA44FF; }
+
+.card-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.6rem;
+  letter-spacing: 2px;
+  color: var(--w);
+  margin-bottom: 14px;
+}
+
+.card-body {
+  font-size: 0.88rem;
+  color: #bbb;
+  line-height: 1.75;
+}
+
+.card-body strong { color: var(--w); font-weight: 600; }
+
+/* CODE BLOCK */
+.code {
+  background: #0D0A00;
+  border: 1px solid rgba(245,200,0,0.15);
+  border-radius: 4px;
+  padding: 16px 20px;
+  margin: 14px 0;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.78rem;
+  color: #C8E000;
+  overflow-x: auto;
+  line-height: 1.6;
+}
+
+.code .comment { color: #555; font-style: italic; }
+.code .kw { color: var(--o); }
+.code .cls { color: var(--y); }
+.code .str { color: #88CC44; }
+.code .ann { color: #AA88FF; }
+
+/* GRID 2 col */
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
+
+/* SOLID badges */
+.solid-badge {
+  display: inline-block;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.5rem;
+  color: var(--y);
+  letter-spacing: 3px;
+  background: rgba(245,200,0,0.08);
+  border: 1px solid rgba(245,200,0,0.2);
+  border-radius: 4px;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  flex-shrink: 0;
+}
+
+.solid-card {
+  background: #1E1800;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 24px;
+  margin-bottom: 16px;
+  display: flex;
+  gap: 20px;
+  transition: border-color 0.2s;
+}
+
+.solid-card:hover { border-color: rgba(245,200,0,0.4); }
+
+.solid-content { flex: 1; }
+
+.solid-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.3rem;
+  letter-spacing: 2px;
+  color: var(--w);
+  margin-bottom: 6px;
+}
+
+.solid-def {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--o);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.solid-body { font-size: 0.85rem; color: #bbb; line-height: 1.7; }
+.solid-body strong { color: var(--w); }
+
+/* ARCH DIAGRAM */
+.arch-layer {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  margin-bottom: 2px;
+  overflow: hidden;
+}
+
+.arch-layer-header {
+  background: rgba(245,200,0,0.08);
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.arch-layer-label {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1rem;
+  letter-spacing: 2px;
+  color: var(--y);
+}
+
+.arch-layer-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  color: #666;
+  margin-left: auto;
+}
+
+.arch-layer-body {
+  padding: 14px 20px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.arch-chip {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.72rem;
+  padding: 4px 12px;
+  background: rgba(245,200,0,0.06);
+  border: 1px solid rgba(245,200,0,0.15);
+  border-radius: 2px;
+  color: #ccc;
+}
+
+.arch-arrow {
+  text-align: center;
+  color: var(--o);
+  font-size: 1.2rem;
+  padding: 4px 0;
+}
+
+/* PATRON CARD */
+.patron {
+  background: #1A1400;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.patron-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 24px;
+  background: rgba(245,200,0,0.04);
+  border-bottom: 1px solid var(--border);
+}
+
+.patron-type {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  padding: 3px 8px;
+  border-radius: 2px;
+  border: 1px solid;
+}
+
+.pt-creacional { border-color: var(--g); color: var(--g); }
+.pt-estructural { border-color: #4488FF; color: #4488FF; }
+.pt-comportamiento { border-color: #AA44FF; color: #AA44FF; }
+
+.patron-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.4rem;
+  letter-spacing: 2px;
+  color: var(--w);
+}
+
+.patron-body { padding: 20px 24px; }
+.patron-desc { font-size: 0.85rem; color: #bbb; line-height: 1.7; margin-bottom: 14px; }
+.patron-aplicacion {
+  background: #0D0A00;
+  border-left: 3px solid var(--y);
+  padding: 12px 16px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.75rem;
+  color: #aaa;
+  line-height: 1.6;
+}
+
+.patron-aplicacion strong { color: var(--y); display: block; margin-bottom: 4px; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1px; }
+
+/* TABLE */
+table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.84rem; }
+th {
+  background: rgba(245,200,0,0.08);
+  color: var(--y);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding: 10px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+td {
+  padding: 10px 16px;
+  border-bottom: 1px solid rgba(245,200,0,0.07);
+  color: #bbb;
+  vertical-align: top;
+}
+td strong { color: var(--w); }
+tr:hover td { background: rgba(245,200,0,0.03); }
+
+/* HIGHLIGHT BOX */
+.highlight {
+  background: rgba(245,200,0,0.06);
+  border: 1px solid rgba(245,200,0,0.2);
+  border-radius: 4px;
+  padding: 20px 24px;
+  margin: 20px 0;
+  font-size: 0.88rem;
+  color: #ccc;
+  line-height: 1.7;
+}
+
+.highlight strong { color: var(--y); }
+
+/* TABS */
+.tabs { display: flex; gap: 2px; margin-bottom: 28px; border-bottom: 1px solid var(--border); }
+.tab-btn {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 10px 18px;
+  background: none;
+  border: none;
+  color: #555;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: all 0.2s;
+}
+.tab-btn:hover { color: #aaa; }
+.tab-btn.active { color: var(--y); border-bottom-color: var(--y); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+h3.sub {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.2rem;
+  letter-spacing: 2px;
+  color: var(--w);
+  margin: 28px 0 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+</style>
+</head>
+<body>
+
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-chip">Papitas<br>Limoncitas</div>
+    <div class="logo-sub">Ingeniería de Software</div>
+  </div>
+  <div class="nav-group">
+    <div class="nav-label">Temas</div>
+    <a class="nav-item active" onclick="show('s1',this)"><div class="dot"></div>1. Principios SOLID</a>
+    <a class="nav-item" onclick="show('s2',this)"><div class="dot"></div>2. Patrones de Diseño</a>
+    <a class="nav-item" onclick="show('s3',this)"><div class="dot"></div>3. Arquitectura de Software</a>
+  </div>
+  <div class="nav-group" style="margin-top:auto;padding-bottom:20px;">
+    <div class="nav-label">Equipo</div>
+    <div style="padding:0 20px;font-family:'DM Mono',monospace;font-size:0.68rem;color:#555;line-height:2;">
+      Angel<br>Diego A. Oyola<br>Cristian Cardona
+    </div>
+  </div>
+</nav>
+
+<div class="main">
+  <div class="hero">
+    <div class="hero-eyebrow">Universidad de Ibagué · Ingeniería de Software 2025</div>
+    <div class="hero-title">SOLID · Patrones · Arquitectura</div>
+    <div class="hero-desc">Aplicación de principios de diseño de software y decisiones arquitectónicas en el proyecto de gestión y distribución de Papitas Limoncitas.</div>
+    <div class="hero-tags">
+      <span class="tag tag-y">Java Spring Boot</span>
+      <span class="tag tag-o">MySQL · JPA</span>
+      <span class="tag tag-g">HTML · CSS · JS</span>
+    </div>
+  </div>
+
+  <!-- ══════════ SOLID ══════════ -->
+  <div class="section active" id="s1">
+    <div class="section-eyebrow">1. Principios de Diseño</div>
+    <div class="section-title">PRINCIPIOS SOLID</div>
+    <div class="section-intro">Los principios SOLID son cinco guías de diseño orientado a objetos que mejoran la mantenibilidad, escalabilidad y legibilidad del código. A continuación se explica cada principio y cómo se aplica en el backend de Papitas Limoncitas.</div>
+
+    <!-- S -->
+    <div class="solid-card">
+      <div class="solid-badge">S</div>
+      <div class="solid-content">
+        <div class="solid-name">Single Responsibility Principle</div>
+        <div class="solid-def">Principio de Responsabilidad Única</div>
+        <div class="solid-body">
+          <strong>Definición:</strong> Una clase debe tener una única razón para cambiar — es decir, una sola responsabilidad.<br><br>
+          <strong>Aplicación en Papitas Limoncitas:</strong> Cada clase tiene una responsabilidad clara y separada. <strong>PedidoController</strong> solo maneja las peticiones HTTP. <strong>PedidoService</strong> contiene la lógica de negocio. <strong>PedidoRepository</strong> maneja el acceso a la base de datos. Ninguna clase mezcla responsabilidades.
+        </div>
+        <div class="code">
+<span class="comment">// ✅ Cada clase tiene UNA responsabilidad</span>
+<span class="ann">@RestController</span>
+<span class="kw">public class</span> <span class="cls">PedidoController</span> {        <span class="comment">// ← solo HTTP</span>
+    <span class="kw">private final</span> <span class="cls">PedidoService</span> service;
+}
+
+<span class="ann">@Service</span>
+<span class="kw">public class</span> <span class="cls">PedidoService</span> {             <span class="comment">// ← solo lógica</span>
+    <span class="kw">private final</span> <span class="cls">PedidoRepository</span> repo;
+}
+
+<span class="ann">@Repository</span>
+<span class="kw">public interface</span> <span class="cls">PedidoRepository</span>          <span class="comment">// ← solo BD</span>
+    <span class="kw">extends</span> <span class="cls">JpaRepository</span>&lt;<span class="cls">Pedido</span>, Long&gt; {}
+        </div>
+      </div>
+    </div>
+
+    <!-- O -->
+    <div class="solid-card">
+      <div class="solid-badge" style="color:var(--o);background:rgba(255,107,0,0.08);border-color:rgba(255,107,0,0.2)">O</div>
+      <div class="solid-content">
+        <div class="solid-name">Open/Closed Principle</div>
+        <div class="solid-def">Principio Abierto/Cerrado</div>
+        <div class="solid-body">
+          <strong>Definición:</strong> Las entidades de software deben estar abiertas para extensión pero cerradas para modificación.<br><br>
+          <strong>Aplicación en Papitas Limoncitas:</strong> El sistema de precios usa una interfaz <strong>EstrategiaPrecio</strong>. Si se agrega un nuevo tipo de descuento (mayorista, temporada, etc.), se crea una nueva clase que implementa la interfaz, sin modificar el código existente de <strong>PedidoService</strong>.
+        </div>
+        <div class="code">
+<span class="comment">// Interfaz base — cerrada para modificación</span>
+<span class="kw">public interface</span> <span class="cls">EstrategiaPrecio</span> {
+    <span class="kw">double</span> calcular(<span class="cls">Pedido</span> pedido);
+}
+
+<span class="comment">// Extensión sin tocar lo existente</span>
+<span class="kw">public class</span> <span class="cls">PrecioMayorista</span> <span class="kw">implements</span> <span class="cls">EstrategiaPrecio</span> {
+    <span class="kw">public double</span> calcular(<span class="cls">Pedido</span> p) { <span class="kw">return</span> p.getTotal() * 0.85; }
+}
+
+<span class="kw">public class</span> <span class="cls">PrecioNormal</span> <span class="kw">implements</span> <span class="cls">EstrategiaPrecio</span> {
+    <span class="kw">public double</span> calcular(<span class="cls">Pedido</span> p) { <span class="kw">return</span> p.getTotal(); }
+}
+        </div>
+      </div>
+    </div>
+
+    <!-- L -->
+    <div class="solid-card">
+      <div class="solid-badge" style="color:var(--g);background:rgba(200,224,0,0.08);border-color:rgba(200,224,0,0.2)">L</div>
+      <div class="solid-content">
+        <div class="solid-name">Liskov Substitution Principle</div>
+        <div class="solid-def">Principio de Sustitución de Liskov</div>
+        <div class="solid-body">
+          <strong>Definición:</strong> Los objetos de una subclase deben poder sustituir a los de la clase base sin alterar el comportamiento del programa.<br><br>
+          <strong>Aplicación en Papitas Limoncitas:</strong> <strong>UsuarioAdmin</strong> y <strong>UsuarioCliente</strong> extienden <strong>Usuario</strong>. Cualquier parte del sistema que use <strong>Usuario</strong> funciona correctamente con cualquiera de las subclases, sin comportamientos inesperados.
+        </div>
+        <div class="code">
+<span class="kw">public class</span> <span class="cls">Usuario</span> {
+    <span class="kw">public</span> String getNombre() { <span class="kw">return</span> nombre; }
+    <span class="kw">public</span> String getRol()    { <span class="kw">return</span> rol; }
+}
+
+<span class="comment">// Ambas subclases se comportan como Usuario</span>
+<span class="kw">public class</span> <span class="cls">UsuarioAdmin</span> <span class="kw">extends</span> <span class="cls">Usuario</span> { ... }
+<span class="kw">public class</span> <span class="cls">UsuarioCliente</span> <span class="kw">extends</span> <span class="cls">Usuario</span> { ... }
+
+<span class="comment">// Se puede usar Usuario sin saber cuál subclase es</span>
+<span class="kw">void</span> mostrarInfo(<span class="cls">Usuario</span> u) { System.out.println(u.getNombre()); }
+        </div>
+      </div>
+    </div>
+
+    <!-- I -->
+    <div class="solid-card">
+      <div class="solid-badge" style="color:#4488FF;background:rgba(68,136,255,0.08);border-color:rgba(68,136,255,0.2)">I</div>
+      <div class="solid-content">
+        <div class="solid-name">Interface Segregation Principle</div>
+        <div class="solid-def">Principio de Segregación de Interfaces</div>
+        <div class="solid-body">
+          <strong>Definición:</strong> Los clientes no deben depender de interfaces que no usan. Es mejor tener muchas interfaces específicas que una general.<br><br>
+          <strong>Aplicación en Papitas Limoncitas:</strong> En lugar de una interfaz gigante <code>IServicio</code>, se usan interfaces específicas por responsabilidad: <strong>IGestionPedidos</strong>, <strong>IGestionInventario</strong>, <strong>IGestionUsuarios</strong>. Cada servicio implementa solo lo que necesita.
+        </div>
+        <div class="code">
+<span class="comment">// ❌ Mal — interfaz demasiado grande</span>
+<span class="kw">interface</span> <span class="cls">IServicioGeneral</span> {
+    crearPedido(); actualizarStock(); registrarUsuario(); generarReporte();
+}
+
+<span class="comment">// ✅ Bien — interfaces específicas</span>
+<span class="kw">interface</span> <span class="cls">IGestionPedidos</span>    { crearPedido(); cancelarPedido(); }
+<span class="kw">interface</span> <span class="cls">IGestionInventario</span> { actualizarStock(); verificarStock(); }
+<span class="kw">interface</span> <span class="cls">IGestionUsuarios</span>   { registrar(); autenticar(); }
+        </div>
+      </div>
+    </div>
+
+    <!-- D -->
+    <div class="solid-card">
+      <div class="solid-badge" style="color:#AA44FF;background:rgba(170,68,255,0.08);border-color:rgba(170,68,255,0.2)">D</div>
+      <div class="solid-content">
+        <div class="solid-name">Dependency Inversion Principle</div>
+        <div class="solid-def">Principio de Inversión de Dependencias</div>
+        <div class="solid-body">
+          <strong>Definición:</strong> Los módulos de alto nivel no deben depender de módulos de bajo nivel. Ambos deben depender de abstracciones.<br><br>
+          <strong>Aplicación en Papitas Limoncitas:</strong> Spring Boot maneja la inyección de dependencias mediante <code>@Autowired</code>. <strong>PedidoController</strong> depende de la abstracción <strong>PedidoService</strong>, no de una implementación concreta. Esto facilita pruebas y cambios futuros.
+        </div>
+        <div class="code">
+<span class="ann">@RestController</span>
+<span class="kw">public class</span> <span class="cls">PedidoController</span> {
+
+    <span class="comment">// Depende de la ABSTRACCIÓN, no de la implementación</span>
+    <span class="ann">@Autowired</span>
+    <span class="kw">private</span> <span class="cls">PedidoService</span> pedidoService;
+
+    <span class="comment">// Spring inyecta la implementación concreta automáticamente</span>
+    <span class="comment">// Si cambia la impl, el Controller NO se modifica</span>
+}
+        </div>
+      </div>
+    </div>
+
+    <div class="highlight">
+      <strong>Resumen SOLID en Papitas Limoncitas:</strong> La arquitectura en capas (Controller → Service → Repository) garantiza naturalmente S, D e I. El patrón de estrategia de precios aplica O. La jerarquía de usuarios aplica L. Juntos, estos principios hacen que el proyecto sea mantenible y extensible.
+    </div>
+  </div>
+
+  <!-- ══════════ PATRONES ══════════ -->
+  <div class="section" id="s2">
+    <div class="section-eyebrow">2. Diseño de Software</div>
+    <div class="section-title">PATRONES DE DISEÑO</div>
+    <div class="section-intro">Los patrones de diseño son soluciones reutilizables a problemas recurrentes en el desarrollo de software. Se clasifican en Creacionales, Estructurales y de Comportamiento. Papitas Limoncitas implementa varios de ellos de forma explícita o implícita.</div>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab('pt','pt1',this)">Creacionales</button>
+      <button class="tab-btn" onclick="showTab('pt','pt2',this)">Estructurales</button>
+      <button class="tab-btn" onclick="showTab('pt','pt3',this)">Comportamiento</button>
+      <button class="tab-btn" onclick="showTab('pt','pt4',this)">Resumen</button>
+    </div>
+
+    <div class="tab-panel active" id="pt1">
+      <div class="patron">
+        <div class="patron-header">
+          <span class="patron-type pt-creacional">Creacional</span>
+          <span class="patron-name">Singleton</span>
+        </div>
+        <div class="patron-body">
+          <div class="patron-desc">Garantiza que una clase tenga una única instancia y proporciona un punto de acceso global a ella. Útil para recursos compartidos como conexiones a base de datos o configuraciones.</div>
+          <div class="patron-aplicacion">
+            <strong>Aplicación en Papitas Limoncitas</strong>
+            Spring Boot gestiona los beans (<code>@Service</code>, <code>@Repository</code>) como Singletons por defecto. La conexión a MySQL a través de HikariPool es una única instancia compartida por toda la aplicación. También el <code>EntityManagerFactory</code> de JPA es un Singleton gestionado por el contenedor.
+          </div>
+          <div class="code">
+<span class="comment">// Spring gestiona automáticamente el Singleton</span>
+<span class="ann">@Service</span> <span class="comment">// ← una sola instancia en toda la app</span>
+<span class="kw">public class</span> <span class="cls">PedidoService</span> { ... }
+
+<span class="ann">@Repository</span> <span class="comment">// ← una sola instancia compartida</span>
+<span class="kw">public interface</span> <span class="cls">ProductoRepository</span>
+    <span class="kw">extends</span> <span class="cls">JpaRepository</span>&lt;<span class="cls">Producto</span>, Long&gt; {}
+          </div>
+        </div>
+      </div>
+
+      <div class="patron">
+        <div class="patron-header">
+          <span class="patron-type pt-creacional">Creacional</span>
+          <span class="patron-name">Builder</span>
+        </div>
+        <div class="patron-body">
+          <div class="patron-desc">Construye objetos complejos paso a paso, separando la construcción de la representación. Permite crear diferentes representaciones del mismo objeto.</div>
+          <div class="patron-aplicacion">
+            <strong>Aplicación en Papitas Limoncitas</strong>
+            La construcción de un <code>Pedido</code> con múltiples <code>DetallePedido</code> utiliza el patrón Builder implícitamente. En el frontend, el carrito de compras construye el objeto pedido de forma incremental antes de enviarlo al backend.
+          </div>
+          <div class="code">
+<span class="comment">// Construcción de pedido paso a paso</span>
+<span class="cls">Pedido</span> pedido = <span class="kw">new</span> <span class="cls">Pedido</span>();
+pedido.setNombreCliente(<span class="str">"Juan García"</span>);
+pedido.setDireccion(<span class="str">"Calle 10 #5-20"</span>);
+pedido.setMetodoPago(<span class="str">"Efectivo"</span>);
+
+<span class="cls">DetallePedido</span> detalle = <span class="kw">new</span> <span class="cls">DetallePedido</span>();
+detalle.setProducto(producto);
+detalle.setCantidad(3);
+pedido.getDetalles().add(detalle);
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="pt2">
+      <div class="patron">
+        <div class="patron-header">
+          <span class="patron-type pt-estructural">Estructural</span>
+          <span class="patron-name">Repository (DAO)</span>
+        </div>
+        <div class="patron-body">
+          <div class="patron-desc">Abstrae la capa de acceso a datos, separando la lógica de negocio de la persistencia. El repositorio actúa como una colección en memoria de objetos del dominio.</div>
+          <div class="patron-aplicacion">
+            <strong>Aplicación en Papitas Limoncitas</strong>
+            Cada entidad tiene su propio repositorio que extiende <code>JpaRepository</code>. <code>PedidoRepository</code>, <code>ProductoRepository</code> y <code>UsuarioRepository</code> abstraen completamente las operaciones SQL. El servicio no sabe si los datos vienen de MySQL, H2 o cualquier otra fuente.
+          </div>
+          <div class="code">
+<span class="ann">@Repository</span>
+<span class="kw">public interface</span> <span class="cls">ProductoRepository</span>
+        <span class="kw">extends</span> <span class="cls">JpaRepository</span>&lt;<span class="cls">Producto</span>, Long&gt; {
+
+    <span class="comment">// Spring genera el SQL automáticamente</span>
+    List&lt;<span class="cls">Producto</span>&gt; findByStockGreaterThan(<span class="kw">int</span> minStock);
+    Optional&lt;<span class="cls">Producto</span>&gt; findByNombre(String nombre);
+}
+          </div>
+        </div>
+      </div>
+
+      <div class="patron">
+        <div class="patron-header">
+          <span class="patron-type pt-estructural">Estructural</span>
+          <span class="patron-name">DTO (Data Transfer Object)</span>
+        </div>
+        <div class="patron-body">
+          <div class="patron-desc">Objeto que transporta datos entre capas o sistemas, evitando exponer directamente las entidades del dominio y controlando qué información se comparte.</div>
+          <div class="patron-aplicacion">
+            <strong>Aplicación en Papitas Limoncitas</strong>
+            El README del proyecto menciona explícitamente "DTOs para entrada y salida de datos". Se usan para recibir datos del frontend y devolver respuestas sin exponer la estructura interna de las entidades JPA ni campos sensibles como la contraseña.
+          </div>
+          <div class="code">
+<span class="comment">// Entidad — no se expone directamente</span>
+<span class="ann">@Entity</span>
+<span class="kw">public class</span> <span class="cls">Usuario</span> {
+    <span class="kw">private</span> String password; <span class="comment">// campo sensible</span>
+}
+
+<span class="comment">// DTO — solo lo necesario para la respuesta</span>
+<span class="kw">public class</span> <span class="cls">UsuarioDTO</span> {
+    <span class="kw">private</span> String nombre;
+    <span class="kw">private</span> String email;
+    <span class="kw">private</span> String rol;
+    <span class="comment">// sin password ✅</span>
+}
+          </div>
+        </div>
+      </div>
+
+      <div class="patron">
+        <div class="patron-header">
+          <span class="patron-type pt-estructural">Estructural</span>
+          <span class="patron-name">MVC (Model-View-Controller)</span>
+        </div>
+        <div class="patron-body">
+          <div class="patron-desc">Separa la aplicación en tres componentes: Modelo (datos), Vista (interfaz) y Controlador (lógica de flujo). Facilita el mantenimiento y la escalabilidad.</div>
+          <div class="patron-aplicacion">
+            <strong>Aplicación en Papitas Limoncitas</strong>
+            El proyecto sigue MVC claramente: el Modelo son las entidades JPA (Pedido, Producto, Usuario). La Vista es el frontend HTML/CSS/JS en <code>static/</code>. El Controlador son las clases <code>@RestController</code> que procesan las peticiones y devuelven respuestas JSON.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="pt3">
+      <div class="patron">
+        <div class="patron-header">
+          <span class="patron-type pt-comportamiento">Comportamiento</span>
+          <span class="patron-name">Strategy (Estrategia)</span>
+        </div>
+        <div class="patron-body">
+          <div class="patron-desc">Define una familia de algoritmos, los encapsula y los hace intercambiables. Permite que el algoritmo varíe independientemente de los clientes que lo usan.</div>
+          <div class="patron-aplicacion">
+            <strong>Aplicación en Papitas Limoncitas</strong>
+            El sistema de cálculo de precios usa Strategy. El README menciona "Cálculo mayorista duplicado en backend". Se puede definir una estrategia de precio normal y otra mayorista, seleccionando cuál aplicar según el tipo de cliente o cantidad del pedido.
+          </div>
+          <div class="code">
+<span class="kw">interface</span> <span class="cls">EstrategiaPrecio</span> {
+    <span class="kw">double</span> calcular(List&lt;<span class="cls">DetallePedido</span>&gt; items);
+}
+
+<span class="kw">class</span> <span class="cls">PrecioNormal</span> <span class="kw">implements</span> <span class="cls">EstrategiaPrecio</span> {
+    <span class="kw">public double</span> calcular(...) { <span class="kw">return</span> subtotal; }
+}
+
+<span class="kw">class</span> <span class="cls">PrecioMayorista</span> <span class="kw">implements</span> <span class="cls">EstrategiaPrecio</span> {
+    <span class="kw">public double</span> calcular(...) { <span class="kw">return</span> subtotal * 0.85; }
+}
+          </div>
+        </div>
+      </div>
+
+      <div class="patron">
+        <div class="patron-header">
+          <span class="patron-type pt-comportamiento">Comportamiento</span>
+          <span class="patron-name">Observer</span>
+        </div>
+        <div class="patron-body">
+          <div class="patron-desc">Define una dependencia uno-a-muchos entre objetos: cuando un objeto cambia de estado, todos sus dependientes son notificados automáticamente.</div>
+          <div class="patron-aplicacion">
+            <strong>Aplicación en Papitas Limoncitas</strong>
+            Cuando el estado de un pedido cambia (pendiente → en ruta → entregado), el sistema puede notificar al administrador y actualizar el inventario. Spring Events o los eventos de JPA (<code>@PostUpdate</code>) implementan este patrón automáticamente.
+          </div>
+          <div class="code">
+<span class="ann">@Entity</span>
+<span class="kw">public class</span> <span class="cls">Pedido</span> {
+
+    <span class="ann">@PostUpdate</span> <span class="comment">// JPA Observer — se dispara al actualizar</span>
+    <span class="kw">void</span> onEstadoCambiado() {
+        <span class="kw">if</span> (<span class="str">"ENTREGADO"</span>.equals(estado)) {
+            <span class="comment">// notificar admin, actualizar stock...</span>
+        }
+    }
+}
+          </div>
+        </div>
+      </div>
+
+      <div class="patron">
+        <div class="patron-header">
+          <span class="patron-type pt-comportamiento">Comportamiento</span>
+          <span class="patron-name">Template Method</span>
+        </div>
+        <div class="patron-body">
+          <div class="patron-desc">Define el esqueleto de un algoritmo en una clase base, dejando que las subclases redefinan ciertos pasos sin cambiar la estructura general.</div>
+          <div class="patron-aplicacion">
+            <strong>Aplicación en Papitas Limoncitas</strong>
+            El flujo de procesamiento de un pedido sigue siempre la misma secuencia: validar → calcular total → actualizar inventario → generar confirmación. <code>JpaRepository</code> de Spring Data aplica internamente Template Method para las operaciones CRUD estándar.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="pt4">
+      <table>
+        <thead>
+          <tr><th>Patrón</th><th>Tipo</th><th>Dónde se aplica</th><th>Beneficio</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Singleton</strong></td><td>Creacional</td><td>Beans de Spring (@Service, @Repository)</td><td>Una sola instancia, menos memoria</td></tr>
+          <tr><td><strong>Builder</strong></td><td>Creacional</td><td>Construcción de Pedido con detalles</td><td>Construcción flexible y clara</td></tr>
+          <tr><td><strong>Repository</strong></td><td>Estructural</td><td>PedidoRepository, ProductoRepository</td><td>Abstracción de la BD</td></tr>
+          <tr><td><strong>DTO</strong></td><td>Estructural</td><td>Entrada/salida de APIs REST</td><td>Seguridad y desacoplamiento</td></tr>
+          <tr><td><strong>MVC</strong></td><td>Estructural</td><td>Toda la arquitectura del proyecto</td><td>Separación de responsabilidades</td></tr>
+          <tr><td><strong>Strategy</strong></td><td>Comportamiento</td><td>Cálculo de precios (normal/mayorista)</td><td>Algoritmos intercambiables</td></tr>
+          <tr><td><strong>Observer</strong></td><td>Comportamiento</td><td>Cambios de estado en pedidos</td><td>Notificaciones desacopladas</td></tr>
+          <tr><td><strong>Template Method</strong></td><td>Comportamiento</td><td>Flujo de procesamiento de pedidos</td><td>Estructura reutilizable</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══════════ ARQUITECTURA ══════════ -->
+  <div class="section" id="s3">
+    <div class="section-eyebrow">3. Diseño de Sistemas</div>
+    <div class="section-title">ARQUITECTURA DE SOFTWARE</div>
+    <div class="section-intro">La arquitectura de software define la estructura fundamental del sistema: cómo se organizan sus componentes, cómo se comunican y qué decisiones técnicas los soportan. Papitas Limoncitas usa una arquitectura en capas con separación entre frontend y backend.</div>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab('ar','ar1',this)">Tipo de Arquitectura</button>
+      <button class="tab-btn" onclick="showTab('ar','ar2',this)">Capas del Sistema</button>
+      <button class="tab-btn" onclick="showTab('ar','ar3',this)">Componentes</button>
+      <button class="tab-btn" onclick="showTab('ar','ar4',this)">Decisiones</button>
+    </div>
+
+    <div class="tab-panel active" id="ar1">
+      <div class="grid2">
+        <div class="card">
+          <div class="card-label">Estilo Arquitectónico</div>
+          <div class="card-title">Arquitectura en Capas</div>
+          <div class="card-body">El sistema se organiza en capas horizontales donde cada una tiene una responsabilidad específica. Las capas superiores consumen servicios de las inferiores pero no al revés. Es el estilo más usado en aplicaciones empresariales con Spring Boot.</div>
+        </div>
+        <div class="card orange">
+          <div class="card-label">Patrón de Comunicación</div>
+          <div class="card-title">REST API</div>
+          <div class="card-body">El frontend HTML/CSS/JS se comunica con el backend a través de endpoints REST. Las respuestas son JSON. Esto permite que el frontend y backend sean independientes y que en el futuro se pueda agregar una app móvil sin cambiar el backend.</div>
+        </div>
+        <div class="card green">
+          <div class="card-label">Patrón de Datos</div>
+          <div class="card-title">ORM con JPA/Hibernate</div>
+          <div class="card-body">Las entidades Java se mapean automáticamente a tablas MySQL mediante JPA. Hibernate genera el SQL. Esto abstrae completamente la base de datos y permite cambiar de motor de BD con mínimo esfuerzo.</div>
+        </div>
+        <div class="card blue">
+          <div class="card-label">Despliegue</div>
+          <div class="card-title">Monolito Modular</div>
+          <div class="card-body">Todo el sistema se despliega como una sola unidad (JAR de Spring Boot). Es adecuado para el tamaño del proyecto. El README menciona Render como plataforma de despliegue y Railway para la base de datos en producción.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="ar2">
+      <h3 class="sub">Estructura de Capas — Papitas Limoncitas</h3>
+
+      <div class="arch-layer">
+        <div class="arch-layer-header">
+          <div class="arch-layer-label">Capa de Presentación</div>
+          <div class="arch-layer-sub">Frontend · src/main/resources/static/</div>
+        </div>
+        <div class="arch-layer-body">
+          <span class="arch-chip">index.html (Tienda)</span>
+          <span class="arch-chip">login.html</span>
+          <span class="arch-chip">admin.html</span>
+          <span class="arch-chip">CSS / JavaScript</span>
+          <span class="arch-chip">localStorage (carrito)</span>
+        </div>
+      </div>
+      <div class="arch-arrow">↕ HTTP / REST (JSON)</div>
+
+      <div class="arch-layer">
+        <div class="arch-layer-header">
+          <div class="arch-layer-label">Capa de Controladores</div>
+          <div class="arch-layer-sub">@RestController · Manejo de peticiones HTTP</div>
+        </div>
+        <div class="arch-layer-body">
+          <span class="arch-chip">PedidoController</span>
+          <span class="arch-chip">ProductoController</span>
+          <span class="arch-chip">UsuarioController</span>
+          <span class="arch-chip">@RestControllerAdvice (errores)</span>
+        </div>
+      </div>
+      <div class="arch-arrow">↕ Llamadas a métodos</div>
+
+      <div class="arch-layer">
+        <div class="arch-layer-header">
+          <div class="arch-layer-label">Capa de Servicios</div>
+          <div class="arch-layer-sub">@Service · Lógica de negocio</div>
+        </div>
+        <div class="arch-layer-body">
+          <span class="arch-chip">PedidoService</span>
+          <span class="arch-chip">ProductoService</span>
+          <span class="arch-chip">UsuarioService</span>
+          <span class="arch-chip">Validaciones Bean Validation</span>
+          <span class="arch-chip">Cálculo de precios</span>
+          <span class="arch-chip">Migración BCrypt</span>
+        </div>
+      </div>
+      <div class="arch-arrow">↕ JPA / Hibernate</div>
+
+      <div class="arch-layer">
+        <div class="arch-layer-header">
+          <div class="arch-layer-label">Capa de Persistencia</div>
+          <div class="arch-layer-sub">@Repository · Acceso a datos</div>
+        </div>
+        <div class="arch-layer-body">
+          <span class="arch-chip">PedidoRepository</span>
+          <span class="arch-chip">ProductoRepository</span>
+          <span class="arch-chip">UsuarioRepository</span>
+          <span class="arch-chip">JpaRepository (CRUD genérico)</span>
+        </div>
+      </div>
+      <div class="arch-arrow">↕ JDBC / SQL</div>
+
+      <div class="arch-layer">
+        <div class="arch-layer-header">
+          <div class="arch-layer-label">Capa de Datos</div>
+          <div class="arch-layer-sub">Base de Datos · MySQL 8.0 · Puerto 3306</div>
+        </div>
+        <div class="arch-layer-body">
+          <span class="arch-chip">tabla: usuario</span>
+          <span class="arch-chip">tabla: producto</span>
+          <span class="arch-chip">tabla: pedido</span>
+          <span class="arch-chip">tabla: detalle_pedido</span>
+          <span class="arch-chip">HikariCP (pool de conexiones)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="ar3">
+      <h3 class="sub">Componentes y Responsabilidades</h3>
+      <table>
+        <thead>
+          <tr><th>Componente</th><th>Tecnología</th><th>Responsabilidad</th><th>Capa</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>index.html</strong></td><td>HTML/CSS/JS</td><td>Tienda visual para clientes. Muestra productos, gestiona carrito con localStorage</td><td>Presentación</td></tr>
+          <tr><td><strong>admin.html</strong></td><td>HTML/CSS/JS</td><td>Panel de administración. Gestión de pedidos, productos y usuarios</td><td>Presentación</td></tr>
+          <tr><td><strong>login.html</strong></td><td>HTML/CSS/JS</td><td>Autenticación de usuarios por email y contraseña</td><td>Presentación</td></tr>
+          <tr><td><strong>*Controller</strong></td><td>Spring MVC</td><td>Recibe peticiones HTTP, delega al servicio, devuelve JSON</td><td>Controlador</td></tr>
+          <tr><td><strong>*Service</strong></td><td>Spring Boot</td><td>Lógica de negocio: validar pedidos, calcular precios, autenticar</td><td>Servicio</td></tr>
+          <tr><td><strong>*Repository</strong></td><td>Spring Data JPA</td><td>CRUD sobre la base de datos. Consultas personalizadas</td><td>Persistencia</td></tr>
+          <tr><td><strong>Entidades JPA</strong></td><td>Hibernate</td><td>Representan las tablas: Usuario, Producto, Pedido, DetallePedido</td><td>Modelo</td></tr>
+          <tr><td><strong>MySQL</strong></td><td>MySQL 8.0</td><td>Persistencia relacional de todos los datos del negocio</td><td>Datos</td></tr>
+          <tr><td><strong>HikariCP</strong></td><td>Spring Boot</td><td>Pool de conexiones a la BD. Gestiona conexiones eficientemente</td><td>Infraestructura</td></tr>
+        </tbody>
+      </table>
+
+      <h3 class="sub">Flujo de una Petición REST</h3>
+      <div class="card">
+        <div class="card-body">
+          <strong>Ejemplo: Cliente hace un pedido desde index.html</strong><br><br>
+          1. El frontend JS recopila el carrito y hace <code>POST /pedidos</code> con JSON<br>
+          2. <strong>PedidoController</strong> recibe la petición y valida el DTO<br>
+          3. Llama a <strong>PedidoService.crearPedido()</strong><br>
+          4. El servicio valida stock con <strong>ProductoRepository</strong><br>
+          5. Crea el Pedido y sus DetallePedido en la BD mediante <strong>PedidoRepository.save()</strong><br>
+          6. Retorna el pedido creado como JSON al frontend<br>
+          7. El frontend muestra la confirmación al cliente
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="ar4">
+      <h3 class="sub">Decisiones Arquitectónicas Clave</h3>
+
+      <div class="card">
+        <div class="card-label">Decisión 1</div>
+        <div class="card-title">Monolito vs Microservicios</div>
+        <div class="card-body">Se eligió <strong>arquitectura monolítica modular</strong> sobre microservicios. Justificación: el equipo es pequeño (3 personas), el dominio es simple y el presupuesto es limitado. Un monolito es más fácil de desarrollar, depurar y desplegar para este contexto. Si el negocio crece, se puede migrar a microservicios por módulos.</div>
+      </div>
+
+      <div class="card orange">
+        <div class="card-label">Decisión 2</div>
+        <div class="card-title">Frontend integrado vs Separado</div>
+        <div class="card-body">El frontend HTML/CSS/JS se sirve desde <strong>Spring Boot como recursos estáticos</strong>. Esto simplifica el despliegue (un solo servidor) y evita problemas de CORS. La desventaja es que actualizar el frontend requiere reiniciar el backend, pero es aceptable para el tamaño del proyecto.</div>
+      </div>
+
+      <div class="card green">
+        <div class="card-label">Decisión 3</div>
+        <div class="card-title">ORM (JPA/Hibernate) vs SQL puro</div>
+        <div class="card-body">Se usa <strong>JPA con Hibernate</strong> en lugar de SQL directo. Justificación: reduce código repetitivo, genera las tablas automáticamente (<code>ddl-auto=update</code>), y el equipo ya conoce Java. La desventaja es menor control sobre las consultas, pero aceptable para este volumen de datos.</div>
+      </div>
+
+      <div class="card blue">
+        <div class="card-label">Decisión 4</div>
+        <div class="card-title">Seguridad: BCrypt para contraseñas</div>
+        <div class="card-body">El README menciona migración automática a <strong>BCrypt</strong> al iniciar sesión. Las contraseñas heredadas en texto plano se hashean automáticamente. Esta decisión mejora la seguridad sin romper cuentas existentes, siguiendo buenas prácticas de almacenamiento de credenciales.</div>
+      </div>
+
+      <div class="card purple">
+        <div class="card-label">Decisión 5</div>
+        <div class="card-title">Carrito en localStorage</div>
+        <div class="card-body">El carrito de compras se persiste en <strong>localStorage del navegador</strong> en lugar de en el servidor. Justificación: evita crear sesiones en el backend, reduce la carga del servidor y el carrito sobrevive refrescos de página. Solo se persiste en la BD cuando se confirma el pedido.</div>
+      </div>
+
+      <div class="highlight">
+        <strong>Conclusión arquitectónica:</strong> Papitas Limoncitas implementa una arquitectura en capas clásica, apropiada para su tamaño y contexto. Las decisiones técnicas priorizan la simplicidad, la mantenibilidad y el costo reducido de infraestructura, alineadas con las restricciones reales del proyecto (equipo pequeño, cliente con presupuesto limitado, usuarios no técnicos).
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function show(id, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+  event.preventDefault();
+}
+
+function showTab(group, panelId, btn) {
+  const section = document.getElementById(panelId).closest('.section');
+  section.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  section.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(panelId).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
